@@ -1,6 +1,0 @@
-::: {.def title="unikátní adresa/identifikátor řádku"}
-- ROWID nebo jiný unikátní identifikátor řádku (v jiných RDBSM) se využívá (mimo jiné) pro implementaci indexů. 
-- PK a UNQ klíče z vlastních atributů jsou stále potřebné
-- ROWID přímo odkazuje k fyzickému umístění řádky
-- ROWID se během života může měnit, nepoužívat v aplikacích!
-:::

@@ -1,0 +1,6 @@
+Okamžik kontroly IO, dočasné vypnutí/zapnutí IO:
+- možnosti stanovit při deklaraci integritního omezení čas, kdy se má kontrolova
+- kontrolu IO lze definovat jako odložitelnou až na konec transakce
+- v rámci session pak lze stanovit, zda IO kontruje IMMEDIATE nebo až na konci transakce
+- Oracle dovoluje v příkazu `{sql} ALTER TABLE` také IO dočasně vypnout/zneplatnit `{sql} DISABLE/ENABLE CONSTRAINT`
+- zpětně zapnutí IO pak může/nemusí vyžadovat kontrolu platnosti dat již vložených v databáz

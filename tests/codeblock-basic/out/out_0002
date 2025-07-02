@@ -1,0 +1,10 @@
+
+::: {.callout title="callout"}
+
+```
+> [!callout] callout
+> callout text
+
+code
+```
+:::

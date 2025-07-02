@@ -1,0 +1,31 @@
+This is the last callout test (for now).
+I am leaving some text here up front, to check the behaviour
+
+[!callout] this is an incorrect callout
+
+Lets try to give one a name and set the collapse setting.
+
+> [!robbie]- A callout with a name
+> This is Robbie, our first named callout.
+> He has collapse set to true.
+
+Now we should check out nested callouts.
+Let us go for a callout, with two nested callouts.
+
+> [!parent] The parent
+> This is a parent callout.
+> It contains two children.
+> > [!child] The first child
+> > This is Bobby - he is a great friend with Robbie.
+> > He loves tomatoes.
+>
+> > [!child] The second child
+> > This is Toby.
+> > Toby is a hater.
+> > Toby calls Bobby and Robbie slurs.
+> > Don't be like Toby, let people live how they want.
+>
+> This is the end of the parent.
+
+This is the end of the whole test.
+Hope it went well!

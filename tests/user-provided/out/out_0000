@@ -1,0 +1,17 @@
+
+::: {.def title="Otevřené adresování (*Open addressing*) = Uzavřené hešování (*Closed hashing*)"}
+Uzavřené hešování proto, že prvky jsou ukládány do *uzavřeného prostoru tabulky*. Otevřené adresování proto, že číslo (index) přihrádky, kam je nakonec hešovaný prvek uložen, je dopředu otevřený, neboť není dán pouze hešovací funkcí, ale i momentální obsazeností tabulky.
+
+Prvky jsou ukládány na další následující místo v poli získané za pomoci dvojité hešovací funkce. V případě mazání prvku se zamění za značku smazaného prvku, který značí možnou existenci dalších prvků s ekvivalentním hešem. Následně, pokud narazíme na značku smazaného prvku při vkládání, tak se prvek vloží na místo značky. V případě, že na tuto značku narazíme při vyhledávání, tak pokračujeme na další iteraci algoritmu, protože jestli při uložení byla tato pozice již zaplněná, může hledaný prvek být jinde.
+
+
+::: {.def title="Lineární přidávání (*Linear Probing*)"}
+Vyhledávací posloupnost je dána funkcí $h(k,i)=(f(k)+i)\mod m$, kde $f(k)$ je *obyčejná* hešovací funkce a $i$ je počet neúspěšných pokusů v aktuální operaci
+:::
+
+
+::: {.def title="Dvojité hešování (*Double Hashing*)"}
+Vyhledávací posloupnost je dána funkcí $h(k,i)=(f(k)+i\cdot g(k))\mod m$, kde $f:\mathcal{U}\to\{0,...,m-1\}$ a $g:\mathcal{U}\to\{1,...,m-1\}$ jsou dvě různé hešovací funkce, $m$ je prvočíslo a $i$ je počet neúspšných pokusů v aktuální operaci 
+Protože $m$ je prvočíslo, je s ním $g(k)$ vždy nesoudělné a vyhledávací posloupnost navštíví každou přihrádku právě jednou.
+:::
+:::

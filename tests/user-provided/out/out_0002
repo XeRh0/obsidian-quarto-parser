@@ -1,0 +1,5 @@
+
+::: {.def title="DML = Data Manipulation Language"}
+- Jazyk pro manipulaci dat a dotazování
+- Např. `SELECT`{.sql}, `INSERT`{.sql}, `UPDATE`{.sql} apod.
+:::

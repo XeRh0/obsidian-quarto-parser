@@ -1,0 +1,3 @@
+> [!def] DML = Data Manipulation Language
+> - Jazyk pro manipulaci dat a dotazování
+> - Např. `{sql} SELECT`, `{sql} INSERT`, `{sql} UPDATE` apod.
