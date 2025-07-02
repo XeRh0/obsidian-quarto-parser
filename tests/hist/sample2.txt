@@ -1,0 +1,82 @@
+## Some shit
+
+> [!check] První možnost
+> Jako v předchozím případě. Jediný rozdíl je ten, že atribut `cislo_z` v tabulce vůz bude nepovinný
+
+
+> [!check] Druhá možnost
+> 
+> > [!code] SQL
+> > ŧŧŧsql
+> > CREATE TABLE vuz (....);
+> > CREATE TABLE zamestnanec (...);
+> > CREATE TABLE zamestnanec_vuz (
+> >     cislo_z integer PRIMARY KEY REFERENCES zamestnanec (cislo_z),
+> >     spz varchar(20) NOT NULL UNIQUE REFERENCES vuz (spz)
+> > );
+> > ŧŧŧ
+> 
+> Tedy vytvoříme *vazební* tabulku
+
+## Some other shit 
+
+> [!check]+ Tralalero Tralala
+>
+
+### Last shit
+
+```codeblock!
+
+```
+
+```codeblock with shit!
+> [!check] Dingus
+>
+
+bababa
+```
+
+schizo test incoming!
+```[!check] Bangus
+```
+
+Verbatim tests!
+`{ziggers} ahahahaha, fany`
+`{slovak} rasto`
+
+here is a `{test} verbatim` inside of a line.
+`{test} another` one at the start
+last one at the `{test} back`
+
+aaaa `{test} double` hahaha `{test} verbatim` hihihi
+
+```
+here is a verbatim inside of a `{test} codeblock`
+```
+
+here is some > magic
+> [!code] XML
+> ```xml
+> <?xml version="1.0"?>
+> <rdf:RDF
+>   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>   xmlns:measure="http://onto.com/measures#"
+>   xmlns:bi-kom-rdf="http://example.com/bi-kom/rdf/example#"
+>   xmlns:base="http://example.com/bi-kom/rdf/example#"
+> >
+>   <rdf:Description rdf:about="http://example.com/bi-kom/rdf/example#ema">
+>     <bi-kom-rdf:isMincing rdf:nodeID="a" />
+>     <bi-kom-rdf:hasName>Ema</bi-kom-rdf:hasName>
+>   </rdf:Description>
+>   <rdf:Description rdf:nodeID="a">
+>     <bi-kom-rdf:isMeat rdf:resource="http://ontology.com/meats#Beef" />
+>     <measure:weight rdf:datatype="http://www.w3.org/2001/XMLSchema#int">300</measure:weight>
+>   </rdf:Description>
+> </rdf:RDF>
+> ```
+
+
+```fucked up codeblock!
+
+
+

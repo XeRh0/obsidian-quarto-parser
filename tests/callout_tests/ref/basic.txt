@@ -1,0 +1,7 @@
+
+::: {.callout title="Head text"}
+first line
+second line
+
+fourth line (third one should be missing)
+:::

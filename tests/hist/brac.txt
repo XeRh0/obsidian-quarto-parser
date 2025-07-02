@@ -1,0 +1,13 @@
+#### JSON - JavaScript Object Notation
+
+- stručný (poměrně malá režie)
+- textový, čitelný strojově i lidmi
+- dvě možné datové struktury, které lze libovolně kombinovat:
+    - **Pole** - posloupnost hodnot uzavřená v hranatých závorkách (v Javě obdoba pole nebo seznamu) 
+    - **Objekt** - kolekce dvojic jméno-hodnota (v Javě obdoba objektu nebo mapy) uzavřená ve složených závorkách
+- každá hodnota (v poli nebo objektu) může být jednoho z následujících typů
+    - řetězec (`{typescript} string`)
+    - číslo (`{typescript} number`) 
+    - objekt
+    - pole
+    - `{typescript} null`

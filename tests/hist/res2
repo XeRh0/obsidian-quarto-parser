@@ -1,0 +1,35 @@
+## Some shit
+
+
+::: {.check title="První možnost"}
+Jako v předchozím případě. Jediný rozdíl je ten, že atribut `cislo_z` v tabulce vůz bude nepovinný
+:::
+
+
+
+::: {.check title="Druhá možnost"}
+
+
+::: {.code title="SQL"}
+[!code] SQL
+ŧŧŧsql
+CREATE TABLE vuz (....);
+CREATE TABLE zamestnanec (...);
+CREATE TABLE zamestnanec_vuz (
+    cislo_z integer PRIMARY KEY REFERENCES zamestnanec (cislo_z),
+    spz varchar(20) NOT NULL UNIQUE REFERENCES vuz (spz)
+);
+ŧŧŧ
+:::
+
+Tedy vytvoříme *vazební* tabulku
+:::
+
+## Some other shit 
+
+
+::: {.check title="Tralalero Tralala" collapse=false}
+
+:::
+
+### Last shit
