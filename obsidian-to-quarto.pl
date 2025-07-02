@@ -27,17 +27,29 @@ my $count = 0;
 #
 
 my sub verbatim_parsing_mode() {
+  my $newline = 0;
+  if($_ =~ "\n") {
+    $newline = 1;
+  }
   while($_ =~ $VERBATIM_REGEX) {
     print("$1\`$3\`\{\.$2\}");
     $_ = $4;
   }
-  print("$4\n");
+  print($_);
+  if($newline == 1) {
+    print("\n");
+  }
   return;
 }
 
 my sub callout_parsing_mode() {
   my $nesting_level = 1;
+  my $codeblock = 0;
   while(<>) {
+    my $newline = 0;
+    if($_ =~ "\n") {
+      $newline = 1;
+    }
    for(my $iterator = 0; $iterator < $nesting_level; ++$iterator) {
       if(s/>//) {
         s/ //;
@@ -49,30 +61,45 @@ my sub callout_parsing_mode() {
       print($_);
       return;
     }
-   if($_ =~ $CALLOUT_REGEX) {
+    if($_ =~ $CODEBLOCK_REGEX) {
+      $codeblock = ($codeblock + 1) % 2;
+      $count = 0;
+      print($_);
+      next;
+    }
+    if($_ =~ $CALLOUT_REGEX && $codeblock == 0) {
       ++$nesting_level;
       print("\n::: {.$1 title=\"$3\"");
       if(!($2 eq "")) {
         print(" collapse=", ($2 eq "-")? "true" : "false");
       }
       print("}\n");
+      $count = 0;
       next;
     }
     if($_ =~ $VERBATIM_REGEX) {
       verbatim_parsing_mode();
+      if(!(s/\n//)) {
+        print("\n");
+      }
+      next;
     }
-       if($count < $nesting_level) {
+    if($count < $nesting_level) {
       --$nesting_level;
-      print ":::\n";
+      print(":::\n");
     }
     $count = 0;
     print($_);
+    if(!(s/\n//)) {
+      print("\n");
+    }
   }
   while($nesting_level > 0) {
     --$nesting_level;
-    print ":::\n";
+    print(":::\n");
   }
 }
+
 
 # Currently only here for preventing parsing callouts or verbatim within 
 # codeblocks, but could be more useful in the future.
