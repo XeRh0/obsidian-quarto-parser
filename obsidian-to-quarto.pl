@@ -76,8 +76,16 @@ my sub callout_parsing_mode() {
     }
     if($_ =~ $CALLOUT_REGEX && $codeblock == 0) {
       ++$nesting_level;
-      print("\n::: {.$1 title=\"$3\"");
-      if(!($2 eq "")) {
+      print("\n::: {.$1 title=\"");
+      $_ = $3;
+      my $collapse = $2;
+      if($_ =~ $VERBATIM_REGEX) {
+        verbatim_parsing_mode();
+        print("\"");
+      } else {
+        print ("$_\"");
+      }
+      if(!($collapse eq "")) {
         print(" collapse=", ($2 eq "-")? "true" : "false");
       }
       print("}\n");
@@ -129,8 +137,16 @@ while(<>) {
   # If we detect callout
   if($_ =~ $CALLOUT_REGEX) {
     # Parse current line
-    print("\n::: {.$1 title=\"$3\"");
-    if(!($2 eq "")) {
+    print("\n::: {.$1 title=\"");
+    $_ = $3;
+    my $collapse = $2;
+    if($_ =~ $VERBATIM_REGEX) {
+      verbatim_parsing_mode();
+      print("\"");
+    } else {
+      print ("$_\"");
+    }
+    if(!($collapse eq "")) {
       # Parse optional parameter +-
       print(" collapse=", ($2 eq "-")? "true" : "false");
     }
