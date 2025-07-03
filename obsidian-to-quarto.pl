@@ -1,41 +1,48 @@
 #!/usr/bin/env perl
 
-#
-# Script for parsing markdown
-#
+# ------------------------------------------------------------------------------
+# Script for parsing obsidian markdown to be used for quarto.
+# ------------------------------------------------------------------------------
 
 use warnings;
 use strict;
 use utf8;
 
-#
+# ------------------------------------------------------------------------------
 # Regular expressions for matching markdown syntax
-#
+# ------------------------------------------------------------------------------
 
 my $CALLOUT_REGEX = qr/> \[\!([^]]+)\]([+-]?) (.*)/;
 my $CODEBLOCK_REGEX = qr/^```/;
 my $VERBATIM_REGEX = qr/([^`]*)\`\{([^}]+)\}\ ([^`]*)\`(.*)/;
 
-#
+# ------------------------------------------------------------------------------
 # Variables
-#
+# ------------------------------------------------------------------------------
 
 my $count = 0;
 
-#
+# ------------------------------------------------------------------------------
 # Subroutines
-#
+# ------------------------------------------------------------------------------
 
 my sub verbatim_parsing_mode() {
+  # Check if the processed line contains a newline and store this information 
+  # for later - otherwise it gets lost once processed with the regular 
+  # expression. Might be just some skill issue or missunderstanding on my part,
+  # which could be fixed later.
   my $newline = 0;
   if($_ =~ "\n") {
     $newline = 1;
   }
   while($_ =~ $VERBATIM_REGEX) {
+    # Build the correct syntax from the matched parts.
     print("$1\`$3\`\{\.$2\}");
+    # Assign remaining contents of the line to $_, so they can be reused.
     $_ = $4;
   }
   print($_);
+  # Add back the lost newline.
   if($newline == 1) {
     print("\n");
   }
@@ -114,9 +121,9 @@ my sub codeblock_parsing_mode() {
 }
 
 
-#
+# ------------------------------------------------------------------------------
 # Main
-#
+# ------------------------------------------------------------------------------
 
 while(<>) {
   # If we detect callout
