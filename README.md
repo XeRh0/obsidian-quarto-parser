@@ -4,8 +4,8 @@ This is a personal script for parsing specific parts of the obsidian markdown sy
 
 # TODO
 
-- [ ] Remove `$_` in favour of more descriptive variables
+- [x] Remove `$_` in favour of more descriptive variables
 - [ ] Proper comments
 - [ ] Split code into more modular parts
-- [ ] Interface for accepting file names as parameters
+- [x] Interface for accepting file names as parameters
 
