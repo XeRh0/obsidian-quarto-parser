@@ -12,7 +12,7 @@ use utf8;
 # Regular expressions for matching markdown syntax
 # ------------------------------------------------------------------------------
 
-my $CALLOUT_REGEX = qr/> \[\!([^]]+)\]([+-]?) (.*)/;
+use constant CALLOUT_REGEX => qr/> \[\!([^]]+)\]([+-]?) (.*)/;
 my $CODEBLOCK_REGEX = qr/^```/;
 my $VERBATIM_REGEX = qr/([^`]*)\`\{([^}]+)\}\ ([^`]*)\`(.*)/;
 
@@ -48,7 +48,7 @@ my sub callout_parsing_mode {
         ++$count;
       }
     }
-    if($line =~ $CALLOUT_REGEX && $codeblock == 0) {
+    if($line =~ CALLOUT_REGEX && $codeblock == 0) {
       ++$nesting_level;
       print("\n::: {.$1 title=\"");
       $line = $3;
@@ -127,7 +127,7 @@ my sub codeblock_parsing_mode {
 # ------------------------------------------------------------------------------
 
 while(my $line = <STDIN>) {
-  if($line =~ $CALLOUT_REGEX) {
+  if($line =~ CALLOUT_REGEX) {
     callout_parsing_mode($line);
   } elsif ($line =~ $CODEBLOCK_REGEX) {
     print($line);
