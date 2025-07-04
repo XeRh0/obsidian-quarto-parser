@@ -124,6 +124,28 @@ my sub codeblock_parsing_mode {
 
 # ------------------------------------------------------------------------------
 
+my sub print_help {
+  print("Usage: ./obsidian-to-quarto.pl [OPTION] ... [FILE]
+Parse obsidian markdown syntax to quarto pandoc syntax.
+Examples: 
+  1) ./obsidian-to-quarto.pl input.md
+    -> input file is set to input.md, output file is STDOUT
+      
+  2) cat input.md | ./obsidian-to-quarto.pl -o output.md
+    -> input file is STDIN, outout file is output.md
+
+  3) ./obsidian-to-quarto.pl input.md output.md 
+    -> input file is input.md, output file is output.md
+
+Flags:
+  -i  <input_file>    sets input file (implicit STDIN) 
+  -o  <output_file>   sets output file (implicit STDOUT)
+  -h                  prints this text
+");
+}
+
+# ------------------------------------------------------------------------------
+
 my sub resolve_flags {
   my $input_file_name;
   my $output_file_name;
