@@ -21,26 +21,20 @@ my $VERBATIM_REGEX = qr/([^`]*)\`\{([^}]+)\}\ ([^`]*)\`(.*)/;
 # ------------------------------------------------------------------------------
 
 my sub verbatim_parsing_mode {
-  # Check if the processed line contains a newline and store this information 
-  # for later - otherwise it gets lost once processed with the regular 
-  # expression. Might be just some skill issue or missunderstanding on my part,
-  # which could be fixed later.
-  my $newline = 0;
   my ($line) = @_;
-  if($line =~ "\n") {
-    $newline = 1;
-  }
+  my $has_newline = ($line =~ "\n");
   while($line =~ $VERBATIM_REGEX) {
     print("$1\`$3\`\{\.$2\}"); # reorder matched parts
     $line = $4; # Assign remaining contents to $line, so they can be reused.
   }
   print($line);
-  # Add back the lost newline.
-  if($newline == 1) {
+  if($has_newline == 1) {
     print("\n");
   }
   return;
 }
+
+# ------------------------------------------------------------------------------
 
 my sub callout_parsing_mode {
   my ($line) = @_;
@@ -48,10 +42,6 @@ my sub callout_parsing_mode {
   my $nesting_level = 0;
   my $codeblock = 0;
   while(defined $line) {
-    my $newline = 0;
-    if($line =~ "\n") {
-      $newline = 1;
-    }
     for(my $counter = 0; $counter < $nesting_level; ++$counter) {
       if($line =~ s/>//) {
         $line =~ s/ //;
@@ -115,9 +105,11 @@ my sub callout_parsing_mode {
   return;
 }
 
+# ------------------------------------------------------------------------------
 
 # Currently only here for preventing parsing callouts or verbatim within 
 # codeblocks, but could be more useful in the future.
+
 my sub codeblock_parsing_mode {
   my ($line) = @_;
   while($line = <STDIN>) {
