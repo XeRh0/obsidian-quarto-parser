@@ -43,28 +43,11 @@ my sub verbatim_parsing_mode {
 }
 
 my sub callout_parsing_mode {
-
-  # ----------------------------------------------------------
   my ($line) = @_;
-  # print("\n::: {.$1 title=\"");
-  # $line = $3;
-  # my $collapse = $2;
-  #if($line =~ $VERBATIM_REGEX) {
-  #  verbatim_parsing_mode($line);
-  #  print("\"");
-  #} else {
-  #  print ("$line\"");
-  #}
-  #if(!($collapse eq "")) {
-  #  print(" collapse=", ($2 eq "-") ? "true" : "false");
-  #}
-  #print("}\n");
   my $count = 0;
   my $nesting_level = 0;
   my $codeblock = 0;
-  # ----------------------------------------------------------
-
-  do {
+  while(defined $line) {
     my $newline = 0;
     if($line =~ "\n") {
       $newline = 1;
@@ -91,36 +74,40 @@ my sub callout_parsing_mode {
       }
       print("}\n");
       $count = 0;
-    } else {
-      if($count == 0) {
-        print(":::\n");
-        print($line);
-        return;
-      }
-      if($line =~ $CODEBLOCK_REGEX) {
-        $codeblock = ($codeblock + 1) % 2;
-        $count = 0;
-        print($line);
-      } else {
-        if($line =~ $VERBATIM_REGEX) {
-          verbatim_parsing_mode($line);
-          if(!($line =~ s/\n//)) {
-            print("\n");
-          }
-        } else {
-          if($count < $nesting_level) {
-            --$nesting_level;
-            print(":::\n");
-          }
-          $count = 0;
-          print($line);
-          if(!($line =~ s/\n//)) {
-            print("\n");
-          }
-        }
-      }
+      $line = <STDIN>;
+      next;
+    } 
+    if($count == 0) {
+      print(":::\n");
+      print($line);
+      return;
     }
-  } while($line = <STDIN>);
+    if($line =~ $CODEBLOCK_REGEX) {
+      $codeblock = ($codeblock + 1) % 2;
+      $count = 0;
+      print($line);
+      $line = <STDIN>;
+      next;
+    } 
+    if($line =~ $VERBATIM_REGEX) {
+      verbatim_parsing_mode($line);
+      if(!($line =~ s/\n//)) {
+        print("\n");
+      }
+      $line = <STDIN>;
+      next;
+    } 
+    if($count < $nesting_level) {
+      --$nesting_level;
+      print(":::\n");
+    }
+    $count = 0;
+    print($line);
+    if(!($line =~ s/\n//)) {
+      print("\n");
+    }
+    $line = <STDIN>;
+  }
   while($nesting_level > 0) {
     --$nesting_level;
     print(":::\n");
