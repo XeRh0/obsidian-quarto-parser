@@ -31,10 +31,8 @@ my sub verbatim_parsing_mode {
     $newline = 1;
   }
   while($line =~ $VERBATIM_REGEX) {
-    # Build the correct syntax from the matched parts.
-    print("$1\`$3\`\{\.$2\}");
-    # Assign remaining contents of the line to $_, so they can be reused.
-    $line = $4;
+    print("$1\`$3\`\{\.$2\}"); # reorder matched parts
+    $line = $4; # Assign remaining contents to $line, so they can be reused.
   }
   print($line);
   # Add back the lost newline.
@@ -45,17 +43,29 @@ my sub verbatim_parsing_mode {
 }
 
 my sub callout_parsing_mode {
+  my ($line) = @_;
+  print("\n::: {.$1 title=\"");
+  $line = $3;
+  my $collapse = $2;
+  if($line =~ $VERBATIM_REGEX) {
+    verbatim_parsing_mode($line);
+    print("\"");
+  } else {
+    print ("$line\"");
+  }
+  if(!($collapse eq "")) {
+    print(" collapse=", ($2 eq "-") ? "true" : "false");
+  }
+  print("}\n");
   my $count = 0;
   my $nesting_level = 1;
   my $codeblock = 0;
-  my ($line) = @_;
-  my $collapse;
   while($line = <STDIN>) {
     my $newline = 0;
     if($line =~ "\n") {
       $newline = 1;
     }
-    for(my $iterator = 0; $iterator < $nesting_level; ++$iterator) {
+    for(my $counter = 0; $counter < $nesting_level; ++$counter) {
       if($line =~ s/>//) {
         $line =~ s/ //;
         ++$count;
@@ -134,19 +144,6 @@ my sub codeblock_parsing_mode {
 
 while(my $line = <STDIN>) {
   if($line =~ $CALLOUT_REGEX) {
-    print("\n::: {.$1 title=\"");
-    $line = $3;
-    my $collapse = $2;
-    if($line =~ $VERBATIM_REGEX) {
-      verbatim_parsing_mode($line);
-      print("\"");
-    } else {
-      print ("$line\"");
-    }
-    if(!($collapse eq "")) {
-      print(" collapse=", ($2 eq "-") ? "true" : "false");
-    }
-    print("}\n");
     callout_parsing_mode($line);
   } elsif ($line =~ $CODEBLOCK_REGEX) {
     print($line);
