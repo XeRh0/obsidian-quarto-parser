@@ -20,22 +20,23 @@ my $VERBATIM_REGEX = qr/([^`]*)\`\{([^}]+)\}\ ([^`]*)\`(.*)/;
 # Subroutines
 # ------------------------------------------------------------------------------
 
-my sub verbatim_parsing_mode() {
+my sub verbatim_parsing_mode {
   # Check if the processed line contains a newline and store this information 
   # for later - otherwise it gets lost once processed with the regular 
   # expression. Might be just some skill issue or missunderstanding on my part,
   # which could be fixed later.
   my $newline = 0;
-  if($_ =~ "\n") {
+  my ($line) = @_;
+  if($line =~ "\n") {
     $newline = 1;
   }
-  while($_ =~ $VERBATIM_REGEX) {
+  while($line =~ $VERBATIM_REGEX) {
     # Build the correct syntax from the matched parts.
     print("$1\`$3\`\{\.$2\}");
     # Assign remaining contents of the line to $_, so they can be reused.
-    $_ = $4;
+    $line = $4;
   }
-  print($_);
+  print($line);
   # Add back the lost newline.
   if($newline == 1) {
     print("\n");
@@ -43,42 +44,44 @@ my sub verbatim_parsing_mode() {
   return;
 }
 
-my sub callout_parsing_mode() {
+my sub callout_parsing_mode {
   my $count = 0;
   my $nesting_level = 1;
   my $codeblock = 0;
-  while(<>) {
+  my ($line) = @_;
+  my $collapse;
+  while($line = <STDIN>) {
     my $newline = 0;
-    if($_ =~ "\n") {
+    if($line =~ "\n") {
       $newline = 1;
     }
-   for(my $iterator = 0; $iterator < $nesting_level; ++$iterator) {
-      if(s/>//) {
-        s/ //;
+    for(my $iterator = 0; $iterator < $nesting_level; ++$iterator) {
+      if($line =~ s/>//) {
+        $line =~ s/ //;
         ++$count;
       }
     }
     if($count == 0) {
       print(":::\n");
-      print($_);
+      print($line);
       return;
     }
-    if($_ =~ $CODEBLOCK_REGEX) {
+    if($line =~ $CODEBLOCK_REGEX) {
       $codeblock = ($codeblock + 1) % 2;
       $count = 0;
-      print($_);
+      print($line);
       next;
     }
-    if($_ =~ $CALLOUT_REGEX && $codeblock == 0) {
+    if($line =~ $CALLOUT_REGEX && $codeblock == 0) {
       ++$nesting_level;
       print("\n::: {.$1 title=\"");
-      $_ = $3;
-      my $collapse = $2;
-      if($_ =~ $VERBATIM_REGEX) {
-        verbatim_parsing_mode();
+      $line = $3;
+      $collapse = $2;
+      if($line =~ $VERBATIM_REGEX) {
+        verbatim_parsing_mode($line);
         print("\"");
       } else {
-        print ("$_\"");
+        print ("$line\"");
       }
       if(!($collapse eq "")) {
         print(" collapse=", ($2 eq "-")? "true" : "false");
@@ -87,9 +90,9 @@ my sub callout_parsing_mode() {
       $count = 0;
       next;
     }
-    if($_ =~ $VERBATIM_REGEX) {
-      verbatim_parsing_mode();
-      if(!(s/\n//)) {
+    if($line =~ $VERBATIM_REGEX) {
+      verbatim_parsing_mode($line);
+      if(!($line =~ s/\n//)) {
         print("\n");
       }
       next;
@@ -99,8 +102,8 @@ my sub callout_parsing_mode() {
       print(":::\n");
     }
     $count = 0;
-    print($_);
-    if(!(s/\n//)) {
+      print($line);
+    if(!($line =~ s/\n//)) {
       print("\n");
     }
   }
@@ -113,10 +116,11 @@ my sub callout_parsing_mode() {
 
 # Currently only here for preventing parsing callouts or verbatim within 
 # codeblocks, but could be more useful in the future.
-my sub codeblock_parsing_mode() {
-  while(<>) {
-    print("$_");
-    if($_ =~ $CODEBLOCK_REGEX) {
+my sub codeblock_parsing_mode {
+  my ($line) = @_;
+  while($line = <STDIN>) {
+    print("$line");
+    if($line =~ $CODEBLOCK_REGEX) {
       return;
     }
   }
@@ -128,31 +132,28 @@ my sub codeblock_parsing_mode() {
 # Main
 # ------------------------------------------------------------------------------
 
-while(<>) {
-  # If we detect callout
-  if($_ =~ $CALLOUT_REGEX) {
-    # Parse current line
+while(my $line = <STDIN>) {
+  if($line =~ $CALLOUT_REGEX) {
     print("\n::: {.$1 title=\"");
-    $_ = $3;
+    $line = $3;
     my $collapse = $2;
-    if($_ =~ $VERBATIM_REGEX) {
-      verbatim_parsing_mode();
+    if($line =~ $VERBATIM_REGEX) {
+      verbatim_parsing_mode($line);
       print("\"");
     } else {
-      print ("$_\"");
+      print ("$line\"");
     }
     if(!($collapse eq "")) {
-      # Parse optional parameter +-
-      print(" collapse=", ($2 eq "-")? "true" : "false");
+      print(" collapse=", ($2 eq "-") ? "true" : "false");
     }
     print("}\n");
-    callout_parsing_mode();
-  } elsif ($_ =~ $CODEBLOCK_REGEX) {
-    print($_);
-    codeblock_parsing_mode();
-  } elsif ($_ =~ $VERBATIM_REGEX) {
-    verbatim_parsing_mode();
+    callout_parsing_mode($line);
+  } elsif ($line =~ $CODEBLOCK_REGEX) {
+    print($line);
+    codeblock_parsing_mode($line);
+  } elsif ($line =~ $VERBATIM_REGEX) {
+    verbatim_parsing_mode($line);
   } else {
-    print($_);
+    print($line);
   }
 }
