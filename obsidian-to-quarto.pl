@@ -14,7 +14,7 @@ use utf8;
 
 use constant CALLOUT_REGEX => qr/> \[\!([^]]+)\]([+-]?) (.*)/;
 use constant CODEBLOCK_REGEX => qr/^```/;
-use constant VERBATIM_REGEX => qr/([^`]*)\`\{([^}]+)\}\ ([^`]*)\`(.*)/;
+use constant VERBATIM_REGEX => qr/(.*)([^`]*)\`\{([^}]+)\}\ ([^`]*)\`(.*)/;
 
 # ------------------------------------------------------------------------------
 # Subroutines
@@ -23,11 +23,12 @@ use constant VERBATIM_REGEX => qr/([^`]*)\`\{([^}]+)\}\ ([^`]*)\`(.*)/;
 my sub verbatim_parsing_mode {
   my ($line, $output_file) = @_;
   my $has_newline = ($line =~ "\n");
+  my $result = "";
   while($line =~ VERBATIM_REGEX) {
-    print($output_file "$1\`$3\`\{\.$2\}"); # reorder matched parts
-    $line = $4; # Assign remaining contents to $line, so they can be reused.
+    $result = "$2\`$4\`\{\.$3\}$5" . $result; # reorder matched parts
+    $line = $1; # Assign remaining contents to $line, so they can be reused.
   }
-  print($output_file $line);
+  print($output_file "$line$result");
   if($has_newline == 1) {
     print($output_file "\n");
   }
