@@ -4,8 +4,10 @@ This is a personal script for parsing specific parts of the obsidian markdown sy
 
 # TODO
 
-- [x] Remove `$_` in favour of more descriptive variables
-- [ ] Proper comments
-- [ ] Split code into more modular parts
-- [x] Interface for accepting file names as parameters
+High priority:
+- [ ] Add more verbatim tests
 
+- [ ] Add a flag for verbatim parsing (currently it does so by default, but it should not)
+- [ ] Clean up available i/o options - currently too many redundant options
+- [ ] Proper comments
+- [ ] YAML header parsing support
