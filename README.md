@@ -5,6 +5,7 @@ This is a personal script for parsing specific parts of the obsidian markdown sy
 # TODO
 
 High priority:
+- [ ] replace manual input parsing with optarg package
 - [ ] Add more verbatim tests
 
 - [ ] Add a flag for verbatim parsing (currently it does so by default, but it should not)
