@@ -192,7 +192,7 @@ my sub resolve_flags {
   }
 
   if($output_file_name ne '') {
-    open($output_file_name, '>', $output_file_name)
+    open($output_file, '>', $output_file_name)
       or die("$0: Could not open $output_file_name");
   }
 
