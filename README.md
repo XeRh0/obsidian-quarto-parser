@@ -5,12 +5,12 @@ This is a personal script for parsing specific parts of the obsidian markdown sy
 # TODO
 
 High priority:
-- [ ] replace manual input parsing with optarg package
+- [x] replace manual input parsing with optarg package
 - [ ] Add more verbatim tests
 
 - [ ] Add a flag for verbatim parsing (currently it does so by default, but it should not)
     - [ ] Look up and credit plugin creators if needed?
-- [ ] Clean up available i/o options - currently too many redundant options
+- [x] Clean up available i/o options - currently too many redundant options
 - [ ] Proper comments
 - [ ] YAML header parsing support
 - [ ] Add inplace parsing support

@@ -4,9 +4,20 @@
 # Script for parsing obsidian markdown to be used for quarto.
 # ------------------------------------------------------------------------------
 
-use warnings;
+use Getopt::Long;
 use strict;
 use utf8;
+use warnings;
+
+# ------------------------------------------------------------------------------
+# Getopt configuration
+# ------------------------------------------------------------------------------
+
+# force case-sensitive options
+Getopt::Long::Configure("no_ignore_case");
+
+# to prevent -long getting recognized as --long
+Getopt::Long::Configure("gnu_compat");
 
 # ------------------------------------------------------------------------------
 # Regular expressions for matching markdown syntax
@@ -148,73 +159,51 @@ Flags:
 # ------------------------------------------------------------------------------
 
 my sub resolve_flags {
-  my $input_file_name;
-  my $output_file_name;
+  my $input_file_name = '';
+  my $output_file_name = '';
+  
+  my $help_flag = 0; 
+  my $verbatim_flag = 0;
+  my $inplace_flag = 0;
 
-  for(my $parameter_count = $#ARGV; $parameter_count >= 0;) {
-    my $input = $ARGV[0];
-    if($input eq "-h") {
-      print_help();
-      exit(0);
-    }
-    if($input eq "-i") {
-      if(!(defined $ARGV[1])) {
-        die("$0: Missing input file name!");  
-      }
-      $input_file_name = $ARGV[1];
-      shift @ARGV for 1..2;
-      $parameter_count -= 2;
-      next;
-    }
-    if($input eq "-o") {
-      if(!(defined $ARGV[1])) {
-        die("$0: Missing output file name!");  
-      }
-      $output_file_name = $ARGV[1];
-      shift @ARGV for 1..2;
-      $parameter_count -= 2;
-      next;
-    }
-    if(!defined($input_file_name)) {
-      $input_file_name = $input;
-      shift @ARGV;
-      $parameter_count -= 1;
-      next;
-    }
-    if(!defined($output_file_name)) {
-      $output_file_name = $input;
-      shift @ARGV;
-      $parameter_count -= 1;
-      next;
-    }
-    die("$0: Unknown parameters!");
+  my $input_file = *STDIN;
+  my $output_file = *STDOUT;
+
+  GetOptions(
+    "help|h" => \$help_flag,
+    "output|o=s" => \$output_file_name,
+    "input|i=s" => \$input_file_name,
+    "verbatim" => \$verbatim_flag,
+    "inplace" => \$inplace_flag
+  ) or do {
+    print_help();
+    exit(1);
+  };
+
+  if($input_file_name eq $output_file_name && 
+     $input_file_name ne '') {
+    die("$0: Input and output file names must not match! " .
+        "For inplace parsing please use the --inplace flag.");
   }
 
-  my $input_file;
-  my $output_file;
-
-  if(!defined($input_file_name)) {
-     $input_file = *STDIN; 
-  } else {
+  if($input_file_name ne '') {
     open($input_file, '<', $input_file_name)
-      or die ("$0: Could not open $input_file_name");
+      or die("$0: Could not open $input_file_name");
   }
 
-  if(!defined($output_file_name)) {
-    $output_file = *STDOUT;
-  } else {
-    open($output_file, '>', $output_file_name) 
-      or die ("$0: Could not open $output_file_name");
+  if($output_file_name ne '') {
+    open($output_file_name, '>', $output_file_name)
+      or die("$0: Could not open $output_file_name");
   }
 
-  return ($input_file, $output_file);
+  return($input_file, $output_file, $verbatim_flag, $inplace_flag);
 }
 
 # ------------------------------------------------------------------------------
 # Main
 # ------------------------------------------------------------------------------
 
-my ($input_file, $output_file) = resolve_flags();
+my ($input_file, $output_file, $verbatim_flag, $inplace_flag) = resolve_flags();
 
 while(my $line = <$input_file>) {
   if($line =~ CALLOUT_REGEX) {
