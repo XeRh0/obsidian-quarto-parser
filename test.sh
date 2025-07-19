@@ -9,7 +9,7 @@ for DIR in tests/*; do
   for TEST in $DIR/in/*; do
     printf "Test \"${TEST##*/}\": ";
 
-    cat $TEST | ./obsidian-to-quarto.pl > tmp.txt;
+    cat $TEST | ./obsidian-to-quarto.pl --verbatim > tmp.txt;
     diff tmp.txt $DIR/out/out_${TEST##*_} #> /dev/null;
 
     if [[ $? -eq 0 ]]; then
