@@ -49,7 +49,7 @@ my sub verbatim_parsing_mode {
 # ------------------------------------------------------------------------------
 
 my sub callout_parsing_mode {
-  my ($line, $input_file, $output_file) = @_;
+  my ($line, $input_file, $output_file, $verbatim_flag) = @_;
   my $count = 0;
   my $nesting_level = 0;
   my $codeblock = 0;
@@ -91,7 +91,7 @@ my sub callout_parsing_mode {
       $line = <$input_file>;
       next;
     } 
-    if($line =~ VERBATIM_REGEX) {
+    if($verbatim_flag == 1 && $line =~ VERBATIM_REGEX) {
       verbatim_parsing_mode($line, $output_file);
       if(!($line =~ s/\n//)) {
         print($output_file "\n");
@@ -139,20 +139,12 @@ my sub codeblock_parsing_mode {
 my sub print_help {
   print("Usage: ./obsidian-to-quarto.pl [OPTION] ... [FILE]
 Parse obsidian markdown syntax to quarto pandoc syntax.
-Examples: 
-  1) ./obsidian-to-quarto.pl input.md
-    -> input file is set to input.md, output file is STDOUT
-      
-  2) cat input.md | ./obsidian-to-quarto.pl -o output.md
-    -> input file is STDIN, outout file is output.md
-
-  3) ./obsidian-to-quarto.pl input.md output.md 
-    -> input file is input.md, output file is output.md
-
 Flags:
-  -i  <input_file>    sets input file (implicit STDIN) 
-  -o  <output_file>   sets output file (implicit STDOUT)
-  -h                  prints this text
+  -i, --input <input_file>      sets input file (implicit STDIN) 
+  -I, --Inplace                 outputs the result of parsing into the input file
+  -h, --help                    prints this text
+  -o, --output <output_file>    sets output file (implicit STDOUT)
+  -v, --verbatim                turns on parsing custom verbatim syntax
 ");
 }
 
@@ -170,11 +162,11 @@ my sub resolve_flags {
   my $output_file = *STDOUT;
 
   GetOptions(
+    "input|i=s" => \$input_file_name,
+    "inplace|I" => \$inplace_flag,
     "help|h" => \$help_flag,
     "output|o=s" => \$output_file_name,
-    "input|i=s" => \$input_file_name,
-    "verbatim" => \$verbatim_flag,
-    "inplace" => \$inplace_flag
+    "verbatim|v" => \$verbatim_flag
   ) or do {
     print_help();
     exit(1);
@@ -207,10 +199,10 @@ my ($input_file, $output_file, $verbatim_flag, $inplace_flag) = resolve_flags();
 
 while(my $line = <$input_file>) {
   if($line =~ CALLOUT_REGEX) {
-    callout_parsing_mode($line, $input_file, $output_file);
+    callout_parsing_mode($line, $input_file, $output_file, $verbatim_flag);
   } elsif ($line =~ CODEBLOCK_REGEX) {
     codeblock_parsing_mode($line, $input_file, $output_file);
-  } elsif ($line =~ VERBATIM_REGEX) {
+  } elsif ($verbatim_flag == 1 && $line =~ VERBATIM_REGEX) {
     verbatim_parsing_mode($line, $output_file);
   } else {
     print($output_file $line);
